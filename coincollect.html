@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>coincollect</title>
+    <style>
+        *{
+        margin: 0;
+        padding: 0;
+        }
+        canvas{
+            border: 1px solid black;
+        }
+        .game{
+            position:  relative;
+            width: 700px;
+            height: 400px;
+            border: 2px solid black;
+            /* background-color: blue; */
+            
+        }
+        .charactor{
+            position: absolute;
+            bottom: 0px;
+            width: 40px;
+            height: 40px;
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <!-- <canvas class="canvas" id="canvas">This browser not supported!</canvas> -->
+    <div class="game" id="game">
+        <div class="charactor" id="charactor"></div>
+    </div>
+</body>
+<script>
+    // get canvas and context
+// const canvas = document.getElementById("canvas");
+// const ctx = canvas.getContext("2d");
+
+
+// const player = {
+//     width:30,
+//     height:30,
+//     x:10,
+//     y:120,
+//     draw(){
+//         ctx.fillRect(this.x,this.y,this.width,this.height);
+//     },
+//     set posy(y){
+//         ctx.save();
+//         ctx.clearRect(this.x,this.y,this.width,this.height);
+//         this.y =y;
+//         this.draw();
+//         ctx.restore();
+//     }
+// };
+// player.draw();
+// ctx.fillStyle='red';
+// ctx.fillRect(30,30,50,50);
+// var j=1;
+// document.body.addEventListener('keydown',function control(e){
+//     if(e.key == 'ArrowUp'){
+//         j++;
+//         player.y=100;
+//         console.log('j'+j);
+        
+
+//     };
+// });
+
+document.addEventListener('DOMContentLoaded',()=>{
+   
+    const prince = document.getElementById('charactor');
+    let bottom =0;
+    let left = 0;
+    let right =0;
+    let gravity = 0.9;
+    let isJumping = false;
+    let isGoingLeft = false;
+    let isGoingRight= false;
+    let leftTimerId;
+    let rightTimerId;                                                                                                                                
+    function enemy(){
+        const divEnemy = document.createElement('div');
+        const game = document.getElementById('game');
+        
+        divEnemy.style.width = 30+'px';
+        divEnemy.style.height= 30+'px';
+        divEnemy.style.backgroundColor ='black';
+        game.append(divEnemy);
+
+        divEnemy.style.position='absolute';
+        divEnemy.style.bottom=0;
+        divEnemy.style.zIndex=-1
+        var x  = 1;
+        var y =1.5;
+        var enemyId = setInterval(()=>{
+          if(x < 0 || x > 670){
+             y=-y;            
+            }
+            x += y;
+          divEnemy.style.left = x+'px';
+            console.log('x '+x);
+        },1000/60)
+
+
+    }
+    enemy();
+    function jump(){
+        if(isJumping) return
+        let timerUpId = setInterval(()=>{
+
+            if(bottom > 200){
+                clearInterval(timerUpId)
+                let timerDownId = setInterval(() => {
+                if(bottom <= 10){
+                    clearInterval(timerDownId)
+                    isJumping = false;
+                }
+                bottom -= 5;
+                prince.style.bottom = bottom+'px';
+            }, 20);
+            }
+         isJumping = true;
+            bottom += 30;
+            bottom = bottom* gravity;
+            
+        prince.style.bottom = bottom +'px';
+        },20);
+
+        
+        
+    };
+
+    // function slideLeft(){
+    //     if(isGoingRight){
+    //         clearInterval(rightTimerId);
+    //         isGoingRight = false;
+    //     }
+    //         isGoingLeft = true;
+            
+    //          leftTimerId = setInterval(() => {
+    //         left -= 5;
+    //         console.log('left '+left);
+    //         prince.style.left=left+'px';    
+    //         }, 20);
+            
+    //     };
+  
+
+    // function slideRight(){
+    //     if(isGoingLeft){
+            
+    //         clearInterval(leftTimerId);
+    //         isGoingLeft = false;
+    //     }
+    //         isGoingRight = true;
+            
+    //          rightTimerId = setInterval(() => {
+    //         left += 5;
+    //         console.log('right '+right);
+    //         prince.style.left=left+'px';    
+    //         }, 20);
+            
+    //     };
+
+    function rightMove(){
+        if(left <= 660 || left == 0){
+            left += 8 ;
+        prince.style.left = left+'px';
+        
+        }
+        
+    };
+
+    function leftMove(){
+        if(left > 0){
+            left -= 8 ;
+        prince.style.left = left+'px';
+        }
+        
+    };
+
+    //assign function to key 
+    document.body.addEventListener('keydown',control);
+
+
+    function control(e){
+if(e.key == 'ArrowUp'){
+    jump();
+}else if(e.key == 'ArrowLeft'){
+    leftMove();
+}else if(e.key == 'ArrowRight'){
+    rightMove();
+};
+
+};
+
+});
+
+</script>
+</html>
